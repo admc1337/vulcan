@@ -38,7 +38,17 @@ module ConstituentPortal
       # Portal always creates NEW users for dependents (skip_user_lookup: true)
       # Paper applications may find/reuse existing users (skip_user_lookup: false, default)
       # Require disability validation for portal-created dependents
-      result = create_user_with_service(dependent_user_params,
+      dparams = dependent_user_params
+      if dparams[:email].blank?
+        dparams[:email] = current_user.email
+      end
+
+      if dparams[:phone].blank?
+        dparams[:phone] = current_user.phone
+      end
+
+
+      result = create_user_with_service(dparams,
                                         is_managing_adult: false,
                                         skip_user_lookup: true,
                                         require_disability_validation: true)
